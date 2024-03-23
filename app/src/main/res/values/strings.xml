@@ -5,4 +5,9 @@
     <string name="title_tab_profile">Profile</string>
     <string name="title_tab_cart">Cart</string>
     <string name="title_tab_home">Home</string>
+    <string name="desc_banner">Pesan makanan lewat aplikasi dan dapatkan diskonmu</string>
+    <string name="title_banner">Diskon 30%</string>
+    <string name="text_header">Hai, Ammar</string>
+    <string name="desc_header">Mau makan apa hari ini?</string>
+    <string name="text_header_menu">List Menu Makanan</string>
 </resources>
