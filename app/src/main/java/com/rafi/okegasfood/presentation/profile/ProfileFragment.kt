@@ -1,12 +1,10 @@
 package com.rafi.okegasfood.presentation.profile
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.rafi.okegasfood.R
-import com.rafi.okegasfood.databinding.FragmentCartBinding
+import androidx.fragment.app.Fragment
 import com.rafi.okegasfood.databinding.FragmentProfileBinding
 
 class ProfileFragment : Fragment() {

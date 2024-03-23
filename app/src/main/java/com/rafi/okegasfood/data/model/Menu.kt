@@ -1,6 +1,5 @@
 package com.rafi.okegasfood.data.model
 
-import androidx.annotation.DrawableRes
 import java.util.UUID
 
 data class Menu(
