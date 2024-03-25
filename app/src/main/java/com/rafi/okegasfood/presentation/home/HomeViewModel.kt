@@ -3,14 +3,17 @@ package com.rafi.okegasfood.presentation.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rafi.okegasfood.data.datasource.CategoryDataSource
-import com.rafi.okegasfood.data.datasource.CategoryDataSourceImpl
-import com.rafi.okegasfood.data.datasource.MenuDataSource
-import com.rafi.okegasfood.data.datasource.MenuDataSourceImpl
+import com.rafi.okegasfood.data.datasource.category.CategoryDataSource
+import com.rafi.okegasfood.data.datasource.category.DummyCategoryDataSource
+import com.rafi.okegasfood.data.datasource.menu.MenuDataSource
+import com.rafi.okegasfood.data.datasource.menu.DummyMenuDataSource
+import com.rafi.okegasfood.data.datasource.repository.CategoryRepository
+import com.rafi.okegasfood.data.datasource.repository.MenuRepository
 
-class HomeViewModel : ViewModel() {
-    private val dataSourceMenu: MenuDataSource by lazy { MenuDataSourceImpl() }
-    private val dataSourceCategory: CategoryDataSource by lazy { CategoryDataSourceImpl() }
+class HomeViewModel(
+    private val categoryRepository: CategoryRepository,
+    private val menuRepository: MenuRepository
+    ) : ViewModel() {
     private val _isUsingGridMode = MutableLiveData(false)
     val isUsingGridMode : LiveData<Boolean>
         get() = _isUsingGridMode
@@ -20,6 +23,8 @@ class HomeViewModel : ViewModel() {
         _isUsingGridMode.postValue(!currentValue)
     }
 
-    fun getCategoryList() = dataSourceCategory.getCategoryData()
-    fun getMenuList() = dataSourceMenu.getMenuData()
+    fun getMenu() = menuRepository.getMenu()
+
+    fun getCatigories() = categoryRepository.getCategories()
+
 }
