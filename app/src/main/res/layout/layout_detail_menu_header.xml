@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fl_food_detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/iv_detail_menu_bg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_banner" />
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="8dp"
+            android:background="@android:color/transparent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_back_left"
+            />
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <TextView
+            android:id="@+id/tv_detail_menu_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@id/tv_detail_menu_price"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Dim Sum" />
+
+        <TextView
+            android:id="@+id/tv_detail_menu_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Rp 18.000" />
+
+        <TextView
+            android:id="@+id/tv_detail_menu_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_detail_menu_name"
+            tools:text="Dimsum Mix adalah sajian yang memikat dengan berbagai macam dimsum yang lezat dan beragam, menjadi pilihan sempurna bagi para pecinta kuliner Asia. Setiap suapan menghadirkan harmoni cita rasa yang menggugah selera dan menyenangkan lidah.
+Terinspirasi dari kekayaan tradisi kuliner Tiongkok, Dimsum Mix menyajikan kombinasi beragam jenis dimsum yang dipanggang, direbus, atau dikukus dengan sempurna. Dari pangsit goreng yang renyah hingga siomay yang lembut dan kenyal, setiap potongan dimsum dihadirkan dengan keahlian dan dedikasi.
+Setiap varian dimsum memberikan pengalaman berbeda. Ada yang diisi dengan daging sapi, udang segar, atau ayam, dilengkapi dengan campuran rempah-rempah yang merangsang selera. Selain itu, ada juga yang disajikan dengan saus spesial yang menambahkan dimensi rasa yang kaya dan memikat.
+Warna-warni dimsum yang cantik dan dipajang dengan apik di atas piring, tidak hanya memanjakan lidah, tetapi juga mata. Kombinasi antara tekstur lembut dan renyah, serta perpaduan rasa yang sempurna, menjadikan Dimsum Mix sebagai sajian yang selalu dinantikan.
+Dengan aroma wangi rempah yang menguar, setiap suapan Dimsum Mix membawa Anda dalam perjalanan kuliner yang memuaskan, menggugah indera, dan membangkitkan kenangan akan kelezatan hidangan Asia yang otentik." />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
