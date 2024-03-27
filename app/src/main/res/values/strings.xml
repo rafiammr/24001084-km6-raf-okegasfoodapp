@@ -10,4 +10,16 @@
     <string name="text_header">Hai, Ammar</string>
     <string name="desc_header">Mau makan apa hari ini?</string>
     <string name="text_header_menu">List Menu Makanan</string>
+    <string name="profile_username">Username</string>
+    <string name="profile_password">Password</string>
+    <string name="profile_email">Email</string>
+    <string name="profile_no_telepon">No. Telepon</string>
+    <string name="header_profile">Profile</string>
+    <string name="button_add_to_cart">Tambahkan ke Keranjang - %s</string>
+    <string name="sum">1</string>
+    <string name="location">Lokasi</string>
+    <string name="number_edit_text">Your Number</string>
+    <string name="email_edit_text">Your Email</string>
+    <string name="username_edit_text">Your Username</string>
+    <string name="name_edit_text">Your Name</string>
 </resources>
