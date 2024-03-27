@@ -1,10 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".presentation.detailmenu.DetailMenuActivity">
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/divider_detail_menu_2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include
+            android:id="@+id/layout_detail_menu"
+            layout="@layout/layout_detail_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </ScrollView>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:id="@+id/divider_detail_menu_2"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_marginVertical="8dp"
+        app:layout_constraintBottom_toTopOf="@id/layout_button_add_to_cart" />
+
+    <include
+        android:id="@+id/layout_button_add_to_cart"
+        layout="@layout/layout_detail_menu_button_add_to_cart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
