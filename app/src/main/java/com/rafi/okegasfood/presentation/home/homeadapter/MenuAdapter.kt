@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.rafi.okegasfood.base.ViewHolderBinder
 import com.rafi.okegasfood.data.model.Menu
 import com.rafi.okegasfood.databinding.ItemMenuBinding
@@ -12,10 +13,9 @@ import com.rafi.okegasfood.databinding.ItemMenuListBinding
 
 class MenuAdapter(
     private val listener: OnItemClickedListener<Menu>,
-    private val listMode: Int = MODE_LIST
+    var listMode: Int = MODE_LIST
 ) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+    RecyclerView.Adapter<ViewHolder>() {
 
     companion object {
         const val MODE_LIST = 0
@@ -38,7 +38,7 @@ class MenuAdapter(
         asyncDataDiffer.submitList(data)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return if (listMode == MODE_GRID) MenuGridItemViewHolder(
             ItemMenuBinding.inflate(
                 LayoutInflater.from(parent.context),
@@ -58,13 +58,13 @@ class MenuAdapter(
 
     override fun getItemCount(): Int = asyncDataDiffer.currentList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (holder !is ViewHolderBinder<*>) return
         (holder as ViewHolderBinder<Menu>).bind(asyncDataDiffer.currentList[position])
     }
 
 }
 
-interface OnItemClickedListener<T>{
+interface OnItemClickedListener<T> {
     fun onItemClicked(item: T)
 }
