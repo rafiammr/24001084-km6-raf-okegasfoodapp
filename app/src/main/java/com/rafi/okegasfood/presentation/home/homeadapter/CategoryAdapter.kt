@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
-import com.rafi.okegasfood.base.ViewHolderBinder
+import coil.load
 import com.rafi.okegasfood.data.model.Category
 import com.rafi.okegasfood.databinding.ItemCategoryBinding
 
-class CategoryAdapter() : RecyclerView.Adapter<ViewHolder>() {
+class CategoryAdapter(private val itemClick: (Category) -> Unit) :
+    RecyclerView.Adapter<CategoryAdapter.ItemCategoryViewHolder>() {
 
     private var asyncDataDiffer = AsyncListDiffer(
         this, object : DiffUtil.ItemCallback<Category>() {
@@ -28,21 +28,35 @@ class CategoryAdapter() : RecyclerView.Adapter<ViewHolder>() {
         asyncDataDiffer.submitList(items)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return CategoryListItemViewHolder(
-            ItemCategoryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemCategoryViewHolder {
+        val binding = ItemCategoryBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
         )
+        return ItemCategoryViewHolder(binding, itemClick)
     }
 
     //counting the data size
     override fun getItemCount(): Int = asyncDataDiffer.currentList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder !is ViewHolderBinder<*>) return
-        (holder as ViewHolderBinder<Category>).bind(asyncDataDiffer.currentList[position])
+    override fun onBindViewHolder(holder: ItemCategoryViewHolder, position: Int) {
+        holder.bindView(asyncDataDiffer.currentList[position])
     }
+
+    class ItemCategoryViewHolder(
+        private val binding: ItemCategoryBinding,
+        val itemClick: (Category) -> Unit
+    ) : RecyclerView.ViewHolder(binding.root) {
+
+        fun bindView(item: Category) {
+            with(item) {
+                binding.ivCategoryImg.load(item.imgUrl) {
+                    crossfade(true)
+                }
+                binding.tvCategoryName.text = item.name
+                itemView.setOnClickListener { itemClick(this) }
+            }
+        }
+    }
+
 }

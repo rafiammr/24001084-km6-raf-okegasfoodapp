@@ -14,16 +14,13 @@ class MenuGridItemViewHolder (
 
     override fun bind(item: Menu) {
         item.let {
-            setMenuImage(it.imgUrl)
-            binding.tvMenuName.text = it.name
-            binding.tvMenuPrice.text = it.price.toIndonesianFormat()
+            binding.ivMenuImg.load(item.imgUrl)
+            binding.tvMenuName.text = item.name
+            binding.tvMenuPrice.text = item.price.toIndonesianFormat()
             itemView.setOnClickListener{
                 listener.onItemClicked(item)
             }
         }
     }
 
-    private fun setMenuImage(image: String?) {
-        image?.let { binding.ivMenuImg.load(it) }
-    }
 }
