@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/iv_menu_cart"
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="8dp"
+            tools:src="@tools:sample/avatars"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_cart_menu_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:layout_constraintEnd_toStartOf="@+id/ib_delete"
+            tools:text="Sate Ayam"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/iv_menu_cart"
+            app:layout_constraintTop_toTopOf="@+id/iv_menu_cart" />
+
+        <TextView
+            android:id="@+id/tv_cart_menu_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="4dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="Rp 28.000"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/iv_menu_cart"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cart_menu_name" />
+
+        <ImageButton
+            android:id="@+id/ib_delete"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/ic_bin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_menu_cart" />
+
+        <LinearLayout
+            android:id="@+id/ly_counter_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_cart_menu_price">
+
+            <ImageButton
+                android:id="@+id/ib_sub_item"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_btn_minus" />
+
+            <TextView
+                android:id="@+id/tv_total_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="8dp"
+                tools:text="1"
+                android:textColor="@color/md_theme_light_onBackground"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/ib_add_item"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/ic_btn_plus" />
+
+        </LinearLayout>
+
+        <com.google.android.material.divider.MaterialDivider
+            android:id="@+id/divider_cart"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/iv_menu_cart"
+            app:layout_constraintTop_toBottomOf="@id/ly_counter_btn" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_notes_cart"
+               android:layout_marginTop="4dp"
+                android:layout_width="0dp"
+                android:paddingVertical="4dp"
+                android:paddingHorizontal="8dp"
+                android:textSize="14sp"
+                android:inputType="text"
+                android:maxLines="3"
+                android:imeOptions="actionDone"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@id/divider_cart"
+                app:layout_constraintTop_toBottomOf="@id/divider_cart"
+                android:background="@drawable/bg_rounded_border_transparent"
+                android:hint="@string/notes_cart" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
