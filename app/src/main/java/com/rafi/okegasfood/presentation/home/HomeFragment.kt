@@ -10,12 +10,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.rafi.okegasfood.R
 import com.rafi.okegasfood.data.datasource.category.DummyCategoryDataSource
 import com.rafi.okegasfood.data.datasource.menu.DummyMenuDataSource
-import com.rafi.okegasfood.data.datasource.repository.CategoryRepository
-import com.rafi.okegasfood.data.datasource.repository.CategoryRepositoryImpl
-import com.rafi.okegasfood.data.datasource.repository.MenuRepository
-import com.rafi.okegasfood.data.datasource.repository.MenuRepositoryImpl
+import com.rafi.okegasfood.data.repository.CategoryRepository
+import com.rafi.okegasfood.data.repository.CategoryRepositoryImpl
+import com.rafi.okegasfood.data.repository.MenuRepository
+import com.rafi.okegasfood.data.repository.MenuRepositoryImpl
 import com.rafi.okegasfood.data.model.Category
 import com.rafi.okegasfood.data.model.Menu
+import com.rafi.okegasfood.data.source.local.pref.UserPreference
+import com.rafi.okegasfood.data.source.local.pref.UserPreferenceImpl
 import com.rafi.okegasfood.databinding.FragmentHomeBinding
 import com.rafi.okegasfood.presentation.detailmenu.DetailMenuActivity
 import com.rafi.okegasfood.presentation.home.homeadapter.CategoryAdapter
@@ -25,6 +27,7 @@ import com.rafi.okegasfood.utils.GenericViewModelFactory
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var userPreference: UserPreference
 
     private val viewModel: HomeViewModel by viewModels {
         val menuDataSource = DummyMenuDataSource()
@@ -55,6 +58,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        userPreference = UserPreferenceImpl(requireContext())
         return binding.root
     }
 
@@ -67,6 +71,7 @@ class HomeFragment : Fragment() {
 
     private fun observeGridMode() {
         viewModel.isUsingGridMode.observe(viewLifecycleOwner) { isUsingGridMode ->
+            userPreference.setUsingGridMode(isUsingGridMode)
             bindListMenu(isUsingGridMode)
             setIcon(isUsingGridMode)
         }

@@ -22,4 +22,19 @@
     <string name="email_edit_text">Your Email</string>
     <string name="username_edit_text">Your Username</string>
     <string name="name_edit_text">Your Name</string>
+    <string name="text_hint_notes">Notes</string>
+    <string name="notes_cart">Catatan :</string>
+    <string name="text_header_your_cart">Keranjang</string>
+    <string name="button_checkout_cart">Pesan</string>
+    <string name="total_quantity">%s x</string>
+    <string name="text_cart_is_empty">Keranjang Kosong</string>
+    <string name="text_section_checkout">Total Harga</string>
+    <string name="text_title_order_confirmation">Konfirmasi Pesanan</string>
+    <string name="text_order_type">Select order type</string>
+    <string name="text_pick_up">Pickup</string>
+    <string name="text_delivery">Delivery</string>
+    <string name="text_payment_method">Payment Method</string>
+    <string name="text_cash">Cash</string>
+    <string name="text_okepay">OkePay</string>
+    <string name="payment_summary">Payment summary</string>
 </resources>

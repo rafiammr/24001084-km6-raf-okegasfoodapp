@@ -1,0 +1,103 @@
+package com.rafi.okegasfood.data.repository
+
+import com.rafi.okegasfood.data.datasource.cart.CartDataSource
+import com.rafi.okegasfood.data.mapper.toCartEntity
+import com.rafi.okegasfood.data.mapper.toCartList
+import com.rafi.okegasfood.data.model.Cart
+import com.rafi.okegasfood.data.model.Menu
+import com.rafi.okegasfood.data.source.local.database.entity.CartEntity
+import com.rafi.okegasfood.utils.ResultWrapper
+import com.rafi.okegasfood.utils.proceed
+import com.rafi.okegasfood.utils.proceedFlow
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
+
+interface CartRepository {
+    fun getUserCartData(): Flow<ResultWrapper<Pair<List<Cart>, Double>>>
+
+    fun createCart(
+        menu: Menu,
+        quantity: Int,
+        notes: String? = null
+    ): Flow<ResultWrapper<Boolean>>
+
+    fun decreaseCart(item: Cart): Flow<ResultWrapper<Boolean>>
+    fun increaseCart(item: Cart): Flow<ResultWrapper<Boolean>>
+    fun setCartNotes(item: Cart): Flow<ResultWrapper<Boolean>>
+    fun deleteCart(item: Cart): Flow<ResultWrapper<Boolean>>
+}
+
+class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepository {
+    override fun getUserCartData(): Flow<ResultWrapper<Pair<List<Cart>, Double>>> {
+        return cartDataSource.getAllCarts()
+            .map {
+                proceed {
+                    val result = it.toCartList()
+                    val totalPrice = result.sumOf { it.menuPrice * it.itemQuantity }
+                    Pair(result, totalPrice)
+                }
+            }.map {
+                if (it.payload?.first?.isEmpty() == false) return@map it
+                ResultWrapper.Empty(it.payload)
+            }.onStart {
+                emit(ResultWrapper.Loading())
+                delay(2000)
+            }
+    }
+
+
+    override fun createCart(
+        menu: Menu,
+        quantity: Int,
+        notes: String?
+    ): Flow<ResultWrapper<Boolean>> {
+        return menu.id?.let { menuId ->
+            proceedFlow {
+                val affectedRow = cartDataSource.insertCart(
+                    CartEntity(
+                        menuId = menuId,
+                        itemQuantity = quantity,
+                        menuImgUrl = menu.imgUrl,
+                        menuPrice = menu.price,
+                        menuName = menu.name,
+                        itemNotes = notes
+                    )
+                )
+                affectedRow > 0
+            }
+        } ?: flow {
+            emit(ResultWrapper.Error(IllegalStateException("Menu ID not found")))
+        }
+    }
+
+    override fun decreaseCart(item: Cart): Flow<ResultWrapper<Boolean>> {
+        val modifiedCart = item.copy().apply {
+            itemQuantity -= 1
+        }
+        return if (modifiedCart.itemQuantity <= 0) {
+            proceedFlow { cartDataSource.deleteCart(item.toCartEntity()) > 0 }
+        } else {
+            proceedFlow { cartDataSource.updateCart(modifiedCart.toCartEntity()) > 1 }
+        }
+    }
+
+    override fun increaseCart(item: Cart): Flow<ResultWrapper<Boolean>> {
+        val modifiedCart = item.copy().apply {
+            itemQuantity += 1
+        }
+        return proceedFlow { cartDataSource.updateCart(modifiedCart.toCartEntity()) > 0 }
+    }
+
+
+    override fun setCartNotes(item: Cart): Flow<ResultWrapper<Boolean>> {
+        return proceedFlow { cartDataSource.updateCart(item.toCartEntity()) > 0 }
+    }
+
+    override fun deleteCart(item: Cart): Flow<ResultWrapper<Boolean>> {
+        return proceedFlow { cartDataSource.deleteCart(item.toCartEntity()) > 1 }
+    }
+
+}

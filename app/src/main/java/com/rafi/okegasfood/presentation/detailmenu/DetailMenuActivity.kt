@@ -4,20 +4,28 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.rafi.okegasfood.R
+import com.rafi.okegasfood.data.datasource.cart.CartDataSource
+import com.rafi.okegasfood.data.datasource.cart.CartDatabaseDataSource
 import com.rafi.okegasfood.data.model.Menu
+import com.rafi.okegasfood.data.repository.CartRepository
+import com.rafi.okegasfood.data.repository.CartRepositoryImpl
+import com.rafi.okegasfood.data.source.local.database.AppDatabase
 import com.rafi.okegasfood.databinding.ActivityDetailMenuBinding
 import com.rafi.okegasfood.utils.GenericViewModelFactory
+import com.rafi.okegasfood.utils.hideKeyboard
+import com.rafi.okegasfood.utils.proceedWhen
 import com.rafi.okegasfood.utils.toIndonesianFormat
 
 class DetailMenuActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRAS_MENU = "EXTRAS_MENU"
-        fun startActivity(context: Context, menu: com.rafi.okegasfood.data.model.Menu) {
+        fun startActivity(context: Context, menu:Menu) {
             val intent = Intent(context, DetailMenuActivity::class.java)
             intent.putExtra(EXTRAS_MENU, menu)
             context.startActivity(intent)
@@ -29,11 +37,14 @@ class DetailMenuActivity : AppCompatActivity() {
     }
 
     private val viewModel: DetailMenuViewModel by viewModels {
+        val db = AppDatabase.getInstance(this)
+        val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
+        val rp: CartRepository = CartRepositoryImpl(ds)
         GenericViewModelFactory.create(
-            DetailMenuViewModel(intent?.extras)
+            DetailMenuViewModel(intent?.extras, rp)
         )
 
-        GenericViewModelFactory.create(DetailMenuViewModel(intent?.extras))
+        GenericViewModelFactory.create(DetailMenuViewModel(intent?.extras, rp))
 
     }
     private var totalItem: Int = 1
@@ -72,6 +83,25 @@ class DetailMenuActivity : AppCompatActivity() {
             binding.layoutButtonAddToCart.btnAddItem.setOnClickListener {
                 viewModel.addItem()
             }
+            binding.layoutButtonAddToCart.btnAddToCart.setOnClickListener {
+                val notes = binding.layoutButtonAddToCart.editTextNotes.text.toString()
+                hideKeyboard()
+                addMenuCart(notes)
+            }
+        }
+    }
+
+    private fun addMenuCart(notes: String?) {
+        viewModel.addToCart(notes).observe(this){
+            it.proceedWhen (
+                doOnSuccess = {
+                    Toast.makeText(this, "Add Menu to cart succes", Toast.LENGTH_SHORT).show()
+                    finish()
+                },
+                doOnError = {
+                    Toast.makeText(this, "Add Menu to cart failed", Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 

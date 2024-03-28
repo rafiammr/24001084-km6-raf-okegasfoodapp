@@ -3,8 +3,8 @@ package com.rafi.okegasfood.presentation.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.rafi.okegasfood.data.datasource.repository.CategoryRepository
-import com.rafi.okegasfood.data.datasource.repository.MenuRepository
+import com.rafi.okegasfood.data.repository.CategoryRepository
+import com.rafi.okegasfood.data.repository.MenuRepository
 
 class HomeViewModel(
     private val categoryRepository: CategoryRepository,
