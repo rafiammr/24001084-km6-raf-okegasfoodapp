@@ -1,30 +1,27 @@
 package com.rafi.okegasfood.presentation.checkout
 
 import android.app.AlertDialog
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.navigation.findNavController
 import com.catnip.kokomputer.presentation.checkout.adapter.PriceListAdapter
 import com.rafi.okegasfood.R
 import com.rafi.okegasfood.data.datasource.cart.CartDataSource
 import com.rafi.okegasfood.data.datasource.cart.CartDatabaseDataSource
 import com.rafi.okegasfood.data.repository.CartRepository
 import com.rafi.okegasfood.data.repository.CartRepositoryImpl
-import com.rafi.okegasfood.utils.proceedWhen
 import com.rafi.okegasfood.data.source.local.database.AppDatabase
 import com.rafi.okegasfood.databinding.ActivityCheckoutBinding
 import com.rafi.okegasfood.databinding.CustomDialogBinding
 import com.rafi.okegasfood.presentation.common.CartListAdapter
-import com.rafi.okegasfood.presentation.home.HomeFragment
 import com.rafi.okegasfood.utils.GenericViewModelFactory
+import com.rafi.okegasfood.utils.proceedWhen
 import com.rafi.okegasfood.utils.toIndonesianFormat
 
 class CheckoutActivity : AppCompatActivity() {
 
-    private val binding : ActivityCheckoutBinding by lazy{
+    private val binding: ActivityCheckoutBinding by lazy {
         ActivityCheckoutBinding.inflate(layoutInflater)
     }
 
@@ -65,7 +62,7 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun setOnClickListeners() {
-        binding.ivBack.setOnClickListener{
+        binding.ivBack.setOnClickListener {
             onBackPressed()
         }
         binding.btnCheckout.setOnClickListener {

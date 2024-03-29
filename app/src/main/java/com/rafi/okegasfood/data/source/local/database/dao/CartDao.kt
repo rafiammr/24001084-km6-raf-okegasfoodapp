@@ -13,10 +13,10 @@ import kotlinx.coroutines.flow.Flow
 interface CartDao {
 
     @Query("SELECT * FROM CARTS")
-    fun getAllCarts() : Flow<List<CartEntity>>
+    fun getAllCarts(): Flow<List<CartEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCart(cart : CartEntity): Long
+    suspend fun insertCart(cart: CartEntity): Long
 
     @Update
     suspend fun updateCart(cart: CartEntity): Int

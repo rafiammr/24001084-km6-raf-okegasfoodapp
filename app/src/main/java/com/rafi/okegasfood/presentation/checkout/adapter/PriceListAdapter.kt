@@ -2,9 +2,9 @@ package com.catnip.kokomputer.presentation.checkout.adapter;
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.AsyncListDiffer
 import com.rafi.okegasfood.data.model.PriceItem
 import com.rafi.okegasfood.databinding.ItemPriceBinding
 import com.rafi.okegasfood.utils.toIndonesianFormat

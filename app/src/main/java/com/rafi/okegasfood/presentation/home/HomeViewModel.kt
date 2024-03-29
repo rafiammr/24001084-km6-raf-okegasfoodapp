@@ -9,12 +9,12 @@ import com.rafi.okegasfood.data.repository.MenuRepository
 class HomeViewModel(
     private val categoryRepository: CategoryRepository,
     private val menuRepository: MenuRepository
-    ) : ViewModel() {
+) : ViewModel() {
     private val _isUsingGridMode = MutableLiveData(false)
-    val isUsingGridMode : LiveData<Boolean>
+    val isUsingGridMode: LiveData<Boolean>
         get() = _isUsingGridMode
 
-    fun changeListMode(){
+    fun changeListMode() {
         val currentValue = _isUsingGridMode.value ?: false
         _isUsingGridMode.postValue(!currentValue)
     }

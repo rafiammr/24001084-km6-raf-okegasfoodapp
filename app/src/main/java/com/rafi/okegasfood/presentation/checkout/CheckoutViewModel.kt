@@ -11,8 +11,8 @@ class CheckoutViewModel(private val cartRepository: CartRepository) : ViewModel(
 
     val checkoutData = cartRepository.getCheckoutData().asLiveData(Dispatchers.IO)
 
-    fun deleteAllCart(){
-        viewModelScope.launch{
+    fun deleteAllCart() {
+        viewModelScope.launch {
             cartRepository.deleteAllCart()
         }
     }
