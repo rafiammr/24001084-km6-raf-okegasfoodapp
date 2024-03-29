@@ -119,7 +119,7 @@ class CartOrderViewHolder(
                     item.itemQuantity.toString()
                 )
             tvCartMenuName.text = item.menuName
-            tvCartMenuPrice.text = (item.itemQuantity * item.menuPrice).toString()
+            tvCartMenuPrice.text = item.menuPrice.toIndonesianFormat()
         }
     }
 
@@ -128,7 +128,6 @@ class CartOrderViewHolder(
     }
 
 }
-
 
 interface CartListener {
     fun onPlusTotalItemCartClicked(cart: Cart)

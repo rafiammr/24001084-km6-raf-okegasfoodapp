@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.liveData
 import com.rafi.okegasfood.data.model.Menu
 import com.rafi.okegasfood.data.repository.CartRepository
 import com.rafi.okegasfood.utils.ResultWrapper
@@ -35,10 +35,10 @@ class DetailMenuViewModel(
         }
     }
 
-    fun addToCart(notes: String?) : LiveData<ResultWrapper<Boolean>>{
+    fun addToCart(notes: String?): LiveData<ResultWrapper<Boolean>> {
         return menu?.let {
             val quantity = totalItemMenu.value ?: 1
             cartRepository.createCart(it, quantity, notes).asLiveData(Dispatchers.IO)
-        }  ?: liveData { emit(ResultWrapper.Error(IllegalStateException("Menu not found")))}
+        } ?: liveData { emit(ResultWrapper.Error(IllegalStateException("Menu not found"))) }
     }
 }

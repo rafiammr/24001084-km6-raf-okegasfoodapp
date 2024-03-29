@@ -7,15 +7,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.rafi.okegasfood.R
 import com.rafi.okegasfood.data.datasource.category.DummyCategoryDataSource
 import com.rafi.okegasfood.data.datasource.menu.DummyMenuDataSource
+import com.rafi.okegasfood.data.model.Category
+import com.rafi.okegasfood.data.model.Menu
 import com.rafi.okegasfood.data.repository.CategoryRepository
 import com.rafi.okegasfood.data.repository.CategoryRepositoryImpl
 import com.rafi.okegasfood.data.repository.MenuRepository
 import com.rafi.okegasfood.data.repository.MenuRepositoryImpl
-import com.rafi.okegasfood.data.model.Category
-import com.rafi.okegasfood.data.model.Menu
 import com.rafi.okegasfood.data.source.local.pref.UserPreference
 import com.rafi.okegasfood.data.source.local.pref.UserPreferenceImpl
 import com.rafi.okegasfood.databinding.FragmentHomeBinding
@@ -90,6 +91,8 @@ class HomeFragment : Fragment() {
     private fun bindListCategory(data: List<Category>) {
         binding.rvCategory.apply {
             adapter = categoryAdapter
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
         categoryAdapter.submitData(data)
     }

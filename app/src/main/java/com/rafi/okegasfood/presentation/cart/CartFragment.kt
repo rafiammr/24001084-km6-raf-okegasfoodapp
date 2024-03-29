@@ -28,28 +28,28 @@ class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
 
-    private val viewModel : CartViewModel by viewModels {
+    private val viewModel: CartViewModel by viewModels {
         val db = AppDatabase.getInstance(requireContext())
         val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
         val rp: CartRepository = CartRepositoryImpl(ds)
         GenericViewModelFactory.create(CartViewModel(rp))
     }
 
-    private val adapter : CartListAdapter by lazy {
+    private val adapter: CartListAdapter by lazy {
         CartListAdapter(object : CartListener {
-            override fun onPlusTotalItemCartClicked(cart: Cart){
+            override fun onPlusTotalItemCartClicked(cart: Cart) {
                 viewModel.increaseCart(cart)
             }
 
-            override fun onMinusTotalItemCartClicked(cart: Cart){
+            override fun onMinusTotalItemCartClicked(cart: Cart) {
                 viewModel.decreaseCart(cart)
             }
 
-            override fun onRemoveCartClicked(cart: Cart){
+            override fun onRemoveCartClicked(cart: Cart) {
                 viewModel.removeCart(cart)
             }
 
-            override fun onUserDoneEditingNotes(cart: Cart){
+            override fun onUserDoneEditingNotes(cart: Cart) {
                 viewModel.setCartNotes(cart)
                 hideKeyboard()
             }

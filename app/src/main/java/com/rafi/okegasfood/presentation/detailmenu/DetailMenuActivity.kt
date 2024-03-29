@@ -25,7 +25,7 @@ class DetailMenuActivity : AppCompatActivity() {
 
     companion object {
         const val EXTRAS_MENU = "EXTRAS_MENU"
-        fun startActivity(context: Context, menu:Menu) {
+        fun startActivity(context: Context, menu: Menu) {
             val intent = Intent(context, DetailMenuActivity::class.java)
             intent.putExtra(EXTRAS_MENU, menu)
             context.startActivity(intent)
@@ -92,8 +92,8 @@ class DetailMenuActivity : AppCompatActivity() {
     }
 
     private fun addMenuCart(notes: String?) {
-        viewModel.addToCart(notes).observe(this){
-            it.proceedWhen (
+        viewModel.addToCart(notes).observe(this) {
+            it.proceedWhen(
                 doOnSuccess = {
                     Toast.makeText(this, "Add Menu to cart succes", Toast.LENGTH_SHORT).show()
                     finish()

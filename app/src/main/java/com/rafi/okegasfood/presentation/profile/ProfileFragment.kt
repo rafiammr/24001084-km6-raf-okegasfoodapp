@@ -27,14 +27,14 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            observeEditMode()
-            setClickListener()
-            observeProfileData()
+        observeEditMode()
+        setClickListener()
+        observeProfileData()
     }
 
-    private fun observeProfileData(){
-        viewModel.profileData.observe(viewLifecycleOwner){
-            binding.ivProfileImg.load(it.profileImg){
+    private fun observeProfileData() {
+        viewModel.profileData.observe(viewLifecycleOwner) {
+            binding.ivProfileImg.load(it.profileImg) {
                 crossfade(true)
                 error(R.drawable.ic_tab_profile)
             }
