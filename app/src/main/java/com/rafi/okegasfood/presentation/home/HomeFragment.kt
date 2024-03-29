@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.rafi.okegasfood.R
 import com.rafi.okegasfood.data.datasource.category.DummyCategoryDataSource
 import com.rafi.okegasfood.data.datasource.menu.DummyMenuDataSource
@@ -90,6 +91,7 @@ class HomeFragment : Fragment() {
     private fun bindListCategory(data: List<Category>) {
         binding.rvCategory.apply {
             adapter = categoryAdapter
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         }
         categoryAdapter.submitData(data)
     }

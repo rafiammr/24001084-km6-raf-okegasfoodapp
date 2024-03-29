@@ -5,6 +5,7 @@ import com.rafi.okegasfood.data.mapper.toCartEntity
 import com.rafi.okegasfood.data.mapper.toCartList
 import com.rafi.okegasfood.data.model.Cart
 import com.rafi.okegasfood.data.model.Menu
+import com.rafi.okegasfood.data.model.PriceItem
 import com.rafi.okegasfood.data.source.local.database.entity.CartEntity
 import com.rafi.okegasfood.utils.ResultWrapper
 import com.rafi.okegasfood.utils.proceed
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.onStart
 interface CartRepository {
     fun getUserCartData(): Flow<ResultWrapper<Pair<List<Cart>, Double>>>
 
+    fun getCheckoutData(): Flow<ResultWrapper<Triple<List<Cart>, List<PriceItem>, Double>>>
+
     fun createCart(
         menu: Menu,
         quantity: Int,
@@ -28,6 +31,8 @@ interface CartRepository {
     fun increaseCart(item: Cart): Flow<ResultWrapper<Boolean>>
     fun setCartNotes(item: Cart): Flow<ResultWrapper<Boolean>>
     fun deleteCart(item: Cart): Flow<ResultWrapper<Boolean>>
+
+    suspend fun deleteAllCart(): ResultWrapper<Unit>
 }
 
 class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepository {
@@ -40,6 +45,27 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
                     Pair(result, totalPrice)
                 }
             }.map {
+                if (it.payload?.first?.isEmpty() == false) return@map it
+                ResultWrapper.Empty(it.payload)
+            }.onStart {
+                emit(ResultWrapper.Loading())
+                delay(1000)
+            }
+    }
+
+    override fun getCheckoutData(): Flow<ResultWrapper<Triple<List<Cart>, List<PriceItem>, Double>>> {
+        return cartDataSource.getAllCarts()
+            .map {
+                //mapping into cart list and sum the total price
+                proceed {
+                    val result = it.toCartList()
+                    val priceItemList =
+                        result.map { PriceItem(it.menuName, it.menuPrice * it.itemQuantity) }
+                    val totalPrice = priceItemList.sumOf { it.total }
+                    Triple(result, priceItemList, totalPrice)
+                }
+            }.map {
+                //map to check when list is empty
                 if (it.payload?.first?.isEmpty() == false) return@map it
                 ResultWrapper.Empty(it.payload)
             }.onStart {
@@ -98,6 +124,10 @@ class CartRepositoryImpl(private val cartDataSource: CartDataSource) : CartRepos
 
     override fun deleteCart(item: Cart): Flow<ResultWrapper<Boolean>> {
         return proceedFlow { cartDataSource.deleteCart(item.toCartEntity()) > 1 }
+    }
+
+    override suspend fun deleteAllCart(): ResultWrapper<Unit> {
+        return proceed { cartDataSource.deleteAll() }
     }
 
 }

@@ -27,6 +27,7 @@
     <string name="text_header_your_cart">Keranjang</string>
     <string name="button_checkout_cart">Pesan</string>
     <string name="total_quantity">%s x</string>
+    <string name="total_quantity_checkout">x %s</string>
     <string name="text_cart_is_empty">Keranjang Kosong</string>
     <string name="text_section_checkout">Total Harga</string>
     <string name="text_title_order_confirmation">Konfirmasi Pesanan</string>
@@ -37,4 +38,7 @@
     <string name="text_cash">Cash</string>
     <string name="text_okepay">OkePay</string>
     <string name="payment_summary">Payment summary</string>
+    <string name="btn_custom_dialog">Oke</string>
+    <string name="title_custom_dialog">Order Success!</string>
+    <string name="desc_custom_dialog">Your order has been placed successfully.</string>
 </resources>
