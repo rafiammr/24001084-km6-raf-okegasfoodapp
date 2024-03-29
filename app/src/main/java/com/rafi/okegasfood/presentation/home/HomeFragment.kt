@@ -1,5 +1,6 @@
 package com.rafi.okegasfood.presentation.home
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,8 @@ import com.rafi.okegasfood.utils.GenericViewModelFactory
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var userPreference: UserPreference
+    private lateinit var mySharedPreferences : UserPreferenceImpl
+
 
     private val viewModel: HomeViewModel by viewModels {
         val menuDataSource = DummyMenuDataSource()
@@ -58,8 +60,9 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        mySharedPreferences = UserPreferenceImpl(requireContext())
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        userPreference = UserPreferenceImpl(requireContext())
+        viewModel.setGridMode(mySharedPreferences.isUsingGridMode())
         return binding.root
     }
 
@@ -72,7 +75,7 @@ class HomeFragment : Fragment() {
 
     private fun observeGridMode() {
         viewModel.isUsingGridMode.observe(viewLifecycleOwner) { isUsingGridMode ->
-            userPreference.setUsingGridMode(isUsingGridMode)
+            mySharedPreferences.setUsingGridMode(isUsingGridMode)
             bindListMenu(isUsingGridMode)
             setIcon(isUsingGridMode)
         }
@@ -81,6 +84,7 @@ class HomeFragment : Fragment() {
     private fun setClickAction() {
         binding.layoutHeaderMenu.ivIconGridList.setOnClickListener {
             viewModel.changeListMode()
+
         }
     }
 
