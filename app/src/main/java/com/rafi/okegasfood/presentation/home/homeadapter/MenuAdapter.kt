@@ -40,6 +40,7 @@ class MenuAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return if (listMode == MODE_GRID) MenuGridItemViewHolder(
+
             ItemMenuBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
