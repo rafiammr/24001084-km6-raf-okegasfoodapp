@@ -62,10 +62,10 @@ class DetailMenuActivity : AppCompatActivity() {
             binding.layoutDetailMenu.layoutDetailMenuHeader.ivDetailMenuBg.load(item.imgUrl) {
                 crossfade(true)
             }
-            binding.layoutDetailMenu.layoutDetailMenuHeader.tvDetailMenuName.text = item.name
+            binding.layoutDetailMenu.layoutDetailMenuHeader.tvDetailMenuName.text = item.nameMenu
             binding.layoutDetailMenu.layoutDetailMenuHeader.tvDetailMenuPrice.text =
                 item.price.toIndonesianFormat()
-            binding.layoutDetailMenu.layoutDetailMenuHeader.tvDetailMenuDesc.text = item.shortDesc
+            binding.layoutDetailMenu.layoutDetailMenuHeader.tvDetailMenuDesc.text = item.detail
             binding.layoutDetailMenu.layoutDetailLocation.tvDetailLocation.text = item.location
             binding.layoutDetailMenu.layoutDetailLocation.tvLocation.setOnClickListener {
                 goGmaps(menu)

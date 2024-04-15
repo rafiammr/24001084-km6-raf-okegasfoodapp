@@ -41,4 +41,5 @@
     <string name="btn_custom_dialog">Oke</string>
     <string name="title_custom_dialog">Order Success!</string>
     <string name="desc_custom_dialog">Your order has been placed successfully.</string>
+    <string name="text_no_data">No data</string>
 </resources>

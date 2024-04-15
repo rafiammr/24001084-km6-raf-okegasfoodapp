@@ -53,7 +53,7 @@ class CategoryAdapter(private val itemClick: (Category) -> Unit) :
                 binding.ivCategoryImg.load(item.imgUrl) {
                     crossfade(true)
                 }
-                binding.tvCategoryName.text = item.name
+                binding.tvCategoryName.text = item.nameCategory
                 itemView.setOnClickListener { itemClick(this) }
             }
         }

@@ -15,7 +15,7 @@ class MenuListItemViewHolder(
     override fun bind(item: Menu) {
         item.let {
             binding.ivMenuImg.load(item.imgUrl)
-            binding.tvMenuName.text = item.name
+            binding.tvMenuName.text = item.nameMenu
             binding.tvMenuPrice.text = item.price.toIndonesianFormat()
             itemView.setOnClickListener {
                 listener.onItemClicked(item)

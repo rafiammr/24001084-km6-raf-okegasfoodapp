@@ -1,64 +1,65 @@
 package com.rafi.okegasfood.presentation.home
 
-import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.rafi.okegasfood.R
-import com.rafi.okegasfood.data.datasource.category.DummyCategoryDataSource
-import com.rafi.okegasfood.data.datasource.menu.DummyMenuDataSource
+import com.rafi.okegasfood.data.datasource.category.CategoryApiDataSource
+import com.rafi.okegasfood.data.datasource.category.CategoryDataSource
+import com.rafi.okegasfood.data.datasource.menu.MenuApiDataSource
+import com.rafi.okegasfood.data.datasource.menu.MenuDataSource
 import com.rafi.okegasfood.data.model.Category
 import com.rafi.okegasfood.data.model.Menu
 import com.rafi.okegasfood.data.repository.CategoryRepository
 import com.rafi.okegasfood.data.repository.CategoryRepositoryImpl
 import com.rafi.okegasfood.data.repository.MenuRepository
 import com.rafi.okegasfood.data.repository.MenuRepositoryImpl
-import com.rafi.okegasfood.data.source.local.pref.UserPreference
 import com.rafi.okegasfood.data.source.local.pref.UserPreferenceImpl
+import com.rafi.okegasfood.data.source.network.services.OkeGasFoodApiService
 import com.rafi.okegasfood.databinding.FragmentHomeBinding
 import com.rafi.okegasfood.presentation.detailmenu.DetailMenuActivity
 import com.rafi.okegasfood.presentation.home.homeadapter.CategoryAdapter
 import com.rafi.okegasfood.presentation.home.homeadapter.MenuAdapter
 import com.rafi.okegasfood.presentation.home.homeadapter.OnItemClickedListener
 import com.rafi.okegasfood.utils.GenericViewModelFactory
+import com.rafi.okegasfood.utils.proceedWhen
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var mySharedPreferences : UserPreferenceImpl
+    private lateinit var mySharedPreferences: UserPreferenceImpl
 
 
     private val viewModel: HomeViewModel by viewModels {
-        val menuDataSource = DummyMenuDataSource()
+        val service = OkeGasFoodApiService.invoke()
+        val menuDataSource: MenuDataSource = MenuApiDataSource(service)
         val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource)
-        val categoryDataSource = DummyCategoryDataSource()
+        val categoryDataSource: CategoryDataSource = CategoryApiDataSource(service)
         val categoryRepository: CategoryRepository = CategoryRepositoryImpl(categoryDataSource)
-
         GenericViewModelFactory.create(HomeViewModel(categoryRepository, menuRepository))
     }
 
     private val categoryAdapter: CategoryAdapter by lazy {
         CategoryAdapter {
-
+            getMenuData(it.nameCategory)
         }
     }
 
     private val menuAdapter: MenuAdapter by lazy {
-        MenuAdapter(
-            object : OnItemClickedListener<Menu> {
-                override fun onItemClicked(item: Menu) {
-                    DetailMenuActivity.startActivity(requireContext(), item)
-                }
-            })
+        MenuAdapter(object : OnItemClickedListener<Menu> {
+            override fun onItemClicked(item: Menu) {
+                DetailMenuActivity.startActivity(requireContext(), item)
+            }
+        })
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         mySharedPreferences = UserPreferenceImpl(requireContext())
         binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -68,15 +69,102 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bindListCategory(viewModel.getCategories())
+        setupListCategory()
+        getCategoryData()
+        getMenuData(null)
         observeGridMode()
         setClickAction()
+    }
+
+    private fun getMenuData(categoryName: String? = null) {
+        Log.d("HomeFragment", "getSlugData: Slug received: $categoryName")
+        viewModel.getMenu(categoryName).observe(viewLifecycleOwner) {
+            it.proceedWhen(
+                doOnLoading = {
+                    binding.layoutStateHomeMenu.root.isVisible = true
+                    binding.layoutStateHomeMenu.pbLoading.isVisible = true
+                    binding.layoutStateHomeMenu.tvError.isVisible = false
+                    binding.rvMenu.isVisible = false
+                },
+                doOnSuccess = {
+                    binding.layoutStateHomeMenu.root.isVisible = false
+                    binding.layoutStateHomeMenu.pbLoading.isVisible = false
+                    binding.layoutStateHomeMenu.tvError.isVisible = false
+                    binding.rvMenu.isVisible = true
+                    it.payload?.let { data -> bindListMenu(data) }
+                },
+                doOnError = {
+                    binding.layoutStateHomeMenu.root.isVisible = true
+                    binding.layoutStateHomeMenu.pbLoading.isVisible = false
+                    binding.layoutStateHomeMenu.tvError.isVisible = true
+                    binding.layoutStateHomeMenu.tvError.text = it.exception?.message.orEmpty()
+                    binding.rvMenu.isVisible = false
+                },
+                doOnEmpty = {
+                    binding.layoutStateHomeMenu.root.isVisible = true
+                    binding.layoutStateHomeMenu.pbLoading.isVisible = false
+                    binding.layoutStateHomeMenu.tvError.isVisible = true
+                    binding.layoutStateHomeMenu.tvError.text = getString(R.string.text_no_data)
+                    binding.rvMenu.isVisible = false
+                }
+            )
+        }
+    }
+
+    private fun getCategoryData() {
+        Log.d("HomeFragment", "getCategoryData: Fetching categories")
+        viewModel.getCategories().observe(viewLifecycleOwner) {
+            it.proceedWhen(
+                doOnLoading = {
+                    binding.layoutStateHomeCategory.root.isVisible = true
+                    binding.layoutStateHomeCategory.pbLoading.isVisible = true
+                    binding.layoutStateHomeCategory.tvError.isVisible = false
+                    binding.rvCategory.isVisible = false
+                },
+                doOnSuccess = {
+                    binding.layoutStateHomeCategory.root.isVisible = false
+                    binding.layoutStateHomeCategory.pbLoading.isVisible = false
+                    binding.layoutStateHomeCategory.tvError.isVisible = false
+                    binding.rvCategory.isVisible = true
+                    it.payload?.let { data -> bindListCategory(data) }
+                },
+                doOnError = {
+                    binding.layoutStateHomeCategory.root.isVisible = true
+                    binding.layoutStateHomeCategory.pbLoading.isVisible = false
+                    binding.layoutStateHomeCategory.tvError.isVisible = true
+                    binding.layoutStateHomeCategory.tvError.text = it.exception?.message.orEmpty()
+                    binding.rvCategory.isVisible = false
+                },
+                doOnEmpty = {
+                    binding.layoutStateHomeCategory.root.isVisible = true
+                    binding.layoutStateHomeCategory.pbLoading.isVisible = false
+                    binding.layoutStateHomeCategory.tvError.isVisible = true
+                    binding.layoutStateHomeCategory.tvError.text = getString(R.string.text_no_data)
+                    binding.rvCategory.isVisible = false
+                }
+            )
+        }
+    }
+
+    private fun setupListMenu(isUsingGrid: Boolean) {
+        val listMode = if (isUsingGrid) MenuAdapter.MODE_GRID else MenuAdapter.MODE_LIST
+        menuAdapter.listMode = listMode
+        binding.rvMenu.apply {
+            adapter = menuAdapter
+            layoutManager = GridLayoutManager(requireContext(), if (isUsingGrid) 2 else 1)
+        }
+    }
+
+    private fun setupListCategory() {
+        binding.rvCategory.apply {
+            adapter = categoryAdapter
+        }
     }
 
     private fun observeGridMode() {
         viewModel.isUsingGridMode.observe(viewLifecycleOwner) { isUsingGridMode ->
             mySharedPreferences.setUsingGridMode(isUsingGridMode)
-            bindListMenu(isUsingGridMode)
+            setupListMenu(isUsingGridMode)
             setIcon(isUsingGridMode)
         }
     }
@@ -93,22 +181,11 @@ class HomeFragment : Fragment() {
     }
 
     private fun bindListCategory(data: List<Category>) {
-        binding.rvCategory.apply {
-            adapter = categoryAdapter
-            layoutManager =
-                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        }
         categoryAdapter.submitData(data)
     }
 
-    private fun bindListMenu(isUsingGrid: Boolean) {
-        val listMode = if (isUsingGrid) MenuAdapter.MODE_GRID else MenuAdapter.MODE_LIST
-        menuAdapter.listMode = listMode
-        binding.rvMenu.apply {
-            adapter = menuAdapter
-            layoutManager = GridLayoutManager(requireContext(), if (isUsingGrid) 2 else 1)
-        }
-        menuAdapter.submitData(viewModel.getMenu())
+    private fun bindListMenu(data: List<Menu>) {
+        menuAdapter.submitData(data)
     }
 }
 
