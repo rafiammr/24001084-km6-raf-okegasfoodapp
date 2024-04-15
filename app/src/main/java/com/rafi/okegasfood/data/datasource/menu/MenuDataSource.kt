@@ -1,7 +1,7 @@
 package com.rafi.okegasfood.data.datasource.menu
 
-import com.rafi.okegasfood.data.model.Menu
+import com.rafi.okegasfood.data.source.network.model.MenuResponse
 
 interface MenuDataSource {
-    fun getMenu(): List<Menu>
+    suspend fun getMenu(categoryName: String? = null): MenuResponse
 }
