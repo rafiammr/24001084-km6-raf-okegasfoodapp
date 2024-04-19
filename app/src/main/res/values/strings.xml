@@ -64,4 +64,5 @@
     <string name="text_add_menu_to_cart_succes">Add Menu to cart succes</string>
     <string name="text_add_menu_to_cart_failed">Add Menu to cart failed</string>
     <string name="text_login_failed">Login Failed : %1$s</string>
+    <string name="text_header_home_hai">Hai!</string>
 </resources>

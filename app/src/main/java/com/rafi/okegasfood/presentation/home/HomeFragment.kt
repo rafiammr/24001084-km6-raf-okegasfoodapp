@@ -114,6 +114,8 @@ class HomeFragment : Fragment() {
         viewModel.getCurrentUser()?.let {
             val headerMessage = getString(R.string.text_header, it.fullName)
             binding.layoutHeader.tvName.text = headerMessage
+        }?: run {
+            binding.layoutHeader.tvName.text = getString(R.string.text_header_home_hai)
         }
     }
 
