@@ -102,7 +102,7 @@ class ProfileFragment : Fragment() {
     }
 
     private fun doLogOut() {
-        val dialog = AlertDialog.Builder(requireContext()).setMessage("Do you want to logout ?")
+        val dialog = AlertDialog.Builder(requireContext()).setMessage(getString(R.string.text_want_to_logout))
             .setPositiveButton(
                 "Yes"
             ) { dialog, id ->
@@ -139,7 +139,8 @@ class ProfileFragment : Fragment() {
                 doOnSuccess = {
                     binding.pbLoading.isVisible = false
                     binding.btnChangeProfile.isVisible = true
-                    Toast.makeText(requireContext(), "Change Profile data Success !", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.text_change_profile_success), Toast.LENGTH_SHORT).show()
                     binding.layoutForm.etName.isEnabled = false
                     binding.layoutForm.etEmail.isEnabled = false
                     binding.btnChangeProfile.isEnabled = false
@@ -147,7 +148,8 @@ class ProfileFragment : Fragment() {
                 doOnError = {
                     binding.pbLoading.isVisible = false
                     binding.btnChangeProfile.isVisible = true
-                    Toast.makeText(requireContext(), "Change Profile data Failed !", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        getString(R.string.text_change_profile_failed), Toast.LENGTH_SHORT).show()
                     binding.layoutForm.etName.isEnabled = false
                     binding.layoutForm.etEmail.isEnabled = false
                     binding.btnChangeProfile.isEnabled = false

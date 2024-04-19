@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                         if (!viewModel.isUserLoggedIn()) {
                             Log.d("UserLoggedIn", "User not logged in. Navigating to login.")
                             navigateToLogin()
-                            controller.navigate(R.id.menu_tab_home)
+                            controller.popBackStack(R.id.menu_tab_home, false)
                         }
                         else{
                             Log.d("UserLoggedIn", "User is logged in. Username: ${viewModel.getCurrentUser()}")
