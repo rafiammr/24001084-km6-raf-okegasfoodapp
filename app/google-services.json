@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "164117287135",
+    "project_id": "okegasfood",
+    "storage_bucket": "okegasfood.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:164117287135:android:ca7a0b84f2838682e7996a",
+        "android_client_info": {
+          "package_name": "com.rafi.okegasfood"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBM81-ekvAIK2_2kkKP9Jid_srGbDoNHwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
