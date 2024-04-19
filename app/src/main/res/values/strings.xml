@@ -58,4 +58,10 @@
     <string name="text_loading">Loading</string>
     <string name="error_checkout">Error checkout</string>
     <string name="text_change_profile">Change Profile</string>
+    <string name="text_change_profile_success">Change Profile data Success !</string>
+    <string name="text_change_profile_failed">Change Profile data Failed !</string>
+    <string name="text_want_to_logout">Do you want to logout ?</string>
+    <string name="text_add_menu_to_cart_succes">Add Menu to cart succes</string>
+    <string name="text_add_menu_to_cart_failed">Add Menu to cart failed</string>
+    <string name="text_login_failed">Login Failed : %1$s</string>
 </resources>
