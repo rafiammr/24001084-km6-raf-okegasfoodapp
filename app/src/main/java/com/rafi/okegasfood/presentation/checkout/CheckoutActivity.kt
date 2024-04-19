@@ -15,6 +15,9 @@ import com.rafi.okegasfood.data.repository.CartRepository
 import com.rafi.okegasfood.data.repository.CartRepositoryImpl
 import com.rafi.okegasfood.data.repository.MenuRepository
 import com.rafi.okegasfood.data.repository.MenuRepositoryImpl
+import com.rafi.okegasfood.data.repository.UserRepositoryImpl
+import com.rafi.okegasfood.data.source.firebase.FirebaseService
+import com.rafi.okegasfood.data.source.firebase.FirebaseServiceImpl
 import com.rafi.okegasfood.data.source.local.database.AppDatabase
 import com.rafi.okegasfood.data.source.network.services.OkeGasFoodApiService
 import com.rafi.okegasfood.databinding.ActivityCheckoutBinding
@@ -34,10 +37,11 @@ class CheckoutActivity : AppCompatActivity() {
         val db = AppDatabase.getInstance(this)
         val service = OkeGasFoodApiService.invoke()
         val menuDataSource: MenuDataSource = MenuApiDataSource(service)
-        val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource)
+        val firebaseService: FirebaseService = FirebaseServiceImpl()
+        val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource, firebaseService)
         val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
         val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(CheckoutViewModel(rp, menuRepository))
+        GenericViewModelFactory.create(CheckoutViewModel(rp, menuRepository, firebaseService))
     }
 
     private val adapter: CartListAdapter by lazy {
@@ -67,6 +71,7 @@ class CheckoutActivity : AppCompatActivity() {
     }
 
     private fun doOnCheckout() {
+        viewModel.getCurrentUser()
         viewModel.checkoutCart().observe(this) { result ->
             result.proceedWhen(
                 doOnSuccess = {
@@ -92,6 +97,7 @@ class CheckoutActivity : AppCompatActivity() {
                     binding.layoutState.tvError.text = getString(R.string.error_checkout)
                     binding.layoutContent.root.isVisible = false
                     binding.layoutContent.rvCart.isVisible = false
+                    binding.cvSectionCheckout.isVisible = false
                 }
             )
         }

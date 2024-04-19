@@ -4,6 +4,7 @@ import com.rafi.okegasfood.data.datasource.menu.MenuDataSource
 import com.rafi.okegasfood.data.mapper.toMenu
 import com.rafi.okegasfood.data.model.Cart
 import com.rafi.okegasfood.data.model.Menu
+import com.rafi.okegasfood.data.source.firebase.FirebaseService
 import com.rafi.okegasfood.data.source.network.model.checkout.CheckoutItemPayload
 import com.rafi.okegasfood.data.source.network.model.checkout.CheckoutRequestPayload
 import com.rafi.okegasfood.utils.ResultWrapper
@@ -17,7 +18,7 @@ interface MenuRepository {
     fun createOrder(menu: List<Cart>): Flow<ResultWrapper<Boolean>>
 }
 
-class MenuRepositoryImpl(private val dataSource: MenuDataSource) : MenuRepository {
+class MenuRepositoryImpl(private val dataSource: MenuDataSource, private val firebaseService: FirebaseService) : MenuRepository {
     override fun getMenu(categoryName: String?): Flow<ResultWrapper<List<Menu>>> {
         return proceedFlow { dataSource.getMenu(categoryName).data.toMenu() }
             .onStart {
@@ -27,7 +28,12 @@ class MenuRepositoryImpl(private val dataSource: MenuDataSource) : MenuRepositor
 
     override fun createOrder(menu: List<Cart>): Flow<ResultWrapper<Boolean>> {
         return proceedFlow {
+            val currentUser = firebaseService.getCurrentUser()
+            val userName = currentUser?.displayName ?: ""
+            val totalPrice = menu.sumOf { it.menuPrice * it.itemQuantity }
             dataSource.createOrder(CheckoutRequestPayload(
+                username = userName,
+                total = totalPrice.toInt(),
                 orders = menu.map {
                     CheckoutItemPayload(
                         name = it.menuName,
