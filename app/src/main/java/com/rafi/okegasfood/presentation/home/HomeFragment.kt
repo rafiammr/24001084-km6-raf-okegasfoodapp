@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rafi.okegasfood.R
+import com.rafi.okegasfood.data.datasource.AuthDataSource
+import com.rafi.okegasfood.data.datasource.FirebaseAuthDataSource
 import com.rafi.okegasfood.data.datasource.category.CategoryApiDataSource
 import com.rafi.okegasfood.data.datasource.category.CategoryDataSource
 import com.rafi.okegasfood.data.datasource.menu.MenuApiDataSource
@@ -24,6 +26,10 @@ import com.rafi.okegasfood.data.repository.MenuRepository
 import com.rafi.okegasfood.data.repository.MenuRepositoryImpl
 import com.rafi.okegasfood.data.repository.UserModeRepository
 import com.rafi.okegasfood.data.repository.UserModeRepositoryImpl
+import com.rafi.okegasfood.data.repository.UserRepository
+import com.rafi.okegasfood.data.repository.UserRepositoryImpl
+import com.rafi.okegasfood.data.source.firebase.FirebaseService
+import com.rafi.okegasfood.data.source.firebase.FirebaseServiceImpl
 import com.rafi.okegasfood.data.source.local.pref.UserPreference
 import com.rafi.okegasfood.data.source.local.pref.UserPreferenceImpl
 import com.rafi.okegasfood.data.source.network.services.OkeGasFoodApiService
@@ -42,17 +48,21 @@ class HomeFragment : Fragment() {
 
     private val viewModel: HomeViewModel by viewModels {
         val service = OkeGasFoodApiService.invoke()
+        val firebaseService: FirebaseService = FirebaseServiceImpl()
+        val authDataSource: AuthDataSource = FirebaseAuthDataSource(firebaseService)
+        val userRepository: UserRepository = UserRepositoryImpl(authDataSource)
         val userPreference: UserPreference = UserPreferenceImpl(requireContext())
         val userDataSource: UserDataSource = UserDataSourceImpl(userPreference)
-        val userRepository: UserModeRepository = UserModeRepositoryImpl(userDataSource)
+        val userModeRepository: UserModeRepository = UserModeRepositoryImpl(userDataSource)
         val menuDataSource: MenuDataSource = MenuApiDataSource(service)
-        val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource)
+        val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource, firebaseService)
         val categoryDataSource: CategoryDataSource = CategoryApiDataSource(service)
         val categoryRepository: CategoryRepository = CategoryRepositoryImpl(categoryDataSource)
         GenericViewModelFactory.create(
             HomeViewModel(
                 categoryRepository,
                 menuRepository,
+                userModeRepository,
                 userRepository
             )
         )
@@ -93,10 +103,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUiMode()
+        showUserData()
         setupListCategory()
         getCategoryData()
         getMenuData(null)
         setClickAction()
+    }
+
+    private fun showUserData() {
+        viewModel.getCurrentUser()?.let {
+            val headerMessage = getString(R.string.text_header, it.fullName)
+            binding.layoutHeader.tvName.text = headerMessage
+        }
     }
 
     private fun getMenuData(categoryName: String? = null) {

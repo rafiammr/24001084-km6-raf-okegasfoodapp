@@ -7,7 +7,7 @@
     <string name="title_tab_home">Home</string>
     <string name="desc_banner">Pesan makanan lewat aplikasi dan dapatkan diskonmu</string>
     <string name="title_banner">Diskon 30%</string>
-    <string name="text_header">Hai, Ammar</string>
+    <string name="text_header">Hai, %1$s</string>
     <string name="desc_header">Mau makan apa hari ini?</string>
     <string name="text_header_menu">List Menu Makanan</string>
     <string name="profile_username">Username</string>
@@ -57,4 +57,5 @@
     <string name="text_logout">Logout</string>
     <string name="text_loading">Loading</string>
     <string name="error_checkout">Error checkout</string>
+    <string name="text_change_profile">Change Profile</string>
 </resources>
