@@ -100,6 +100,9 @@ class DetailMenuActivity : AppCompatActivity() {
                 },
                 doOnError = {
                     Toast.makeText(this, "Add Menu to cart failed", Toast.LENGTH_SHORT).show()
+                },
+                doOnLoading = {
+                    Toast.makeText(this, getString(R.string.text_loading), Toast.LENGTH_SHORT).show()
                 }
             )
         }

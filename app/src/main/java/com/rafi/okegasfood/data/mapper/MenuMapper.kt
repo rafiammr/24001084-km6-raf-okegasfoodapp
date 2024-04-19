@@ -1,8 +1,7 @@
 package com.rafi.okegasfood.data.mapper
 
 import com.rafi.okegasfood.data.model.Menu
-import com.rafi.okegasfood.data.source.network.model.MenuItemResponse
-import com.rafi.okegasfood.data.source.network.model.MenuResponse
+import com.rafi.okegasfood.data.source.network.model.menu.MenuItemResponse
 
 fun MenuItemResponse?.toMenu() = Menu(
     imgUrl = this?.imgUrl.orEmpty(),
