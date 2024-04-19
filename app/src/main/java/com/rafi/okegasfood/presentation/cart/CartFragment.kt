@@ -8,31 +8,44 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.rafi.okegasfood.R
+import com.rafi.okegasfood.data.datasource.AuthDataSource
+import com.rafi.okegasfood.data.datasource.FirebaseAuthDataSource
 import com.rafi.okegasfood.data.datasource.cart.CartDataSource
 import com.rafi.okegasfood.data.datasource.cart.CartDatabaseDataSource
 import com.rafi.okegasfood.data.model.Cart
 import com.rafi.okegasfood.data.repository.CartRepository
 import com.rafi.okegasfood.data.repository.CartRepositoryImpl
+import com.rafi.okegasfood.data.repository.UserRepository
+import com.rafi.okegasfood.data.repository.UserRepositoryImpl
+import com.rafi.okegasfood.data.source.firebase.FirebaseService
+import com.rafi.okegasfood.data.source.firebase.FirebaseServiceImpl
 import com.rafi.okegasfood.data.source.local.database.AppDatabase
 import com.rafi.okegasfood.databinding.FragmentCartBinding
 import com.rafi.okegasfood.presentation.checkout.CheckoutActivity
 import com.rafi.okegasfood.presentation.common.CartListAdapter
 import com.rafi.okegasfood.presentation.common.CartListener
+import com.rafi.okegasfood.presentation.login.LoginActivity
 import com.rafi.okegasfood.utils.GenericViewModelFactory
 import com.rafi.okegasfood.utils.hideKeyboard
 import com.rafi.okegasfood.utils.proceedWhen
 import com.rafi.okegasfood.utils.toIndonesianFormat
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
 
     private val viewModel: CartViewModel by viewModels {
-        val db = AppDatabase.getInstance(requireContext())
-        val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
-        val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(CartViewModel(rp))
+        val source : FirebaseService = FirebaseServiceImpl()
+        val dataSource : AuthDataSource = FirebaseAuthDataSource(source)
+        val repository : UserRepository = UserRepositoryImpl(dataSource)
+        val appDatabase = AppDatabase.getInstance(requireContext())
+        val cartDataSource: CartDataSource = CartDatabaseDataSource(appDatabase.cartDao())
+        val cartRepository: CartRepository = CartRepositoryImpl(cartDataSource)
+        GenericViewModelFactory.create(CartViewModel(cartRepository, repository))
     }
 
     private val adapter: CartListAdapter by lazy {
@@ -74,8 +87,26 @@ class CartFragment : Fragment() {
 
     private fun setClickListeners() {
         binding.btnCheckout.setOnClickListener {
-            startActivity(Intent(requireContext(), CheckoutActivity::class.java))
+            checkIfUserLogin()
         }
+    }
+
+    private fun checkIfUserLogin() {
+        lifecycleScope.launch {
+            if (viewModel.isUserLoggedIn()) {
+                navigateToCheckout()
+            } else {
+                navigateToLogin()
+            }
+        }
+    }
+
+    private fun navigateToLogin() {
+        startActivity(Intent(requireContext(), LoginActivity::class.java))
+    }
+
+    private fun navigateToCheckout() {
+        startActivity(Intent(requireContext(), CheckoutActivity::class.java))
     }
 
     private fun observeData() {

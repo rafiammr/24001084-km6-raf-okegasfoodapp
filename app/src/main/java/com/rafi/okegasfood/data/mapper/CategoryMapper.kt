@@ -1,7 +1,7 @@
 package com.rafi.okegasfood.data.mapper
 
 import com.rafi.okegasfood.data.model.Category
-import com.rafi.okegasfood.data.source.network.model.CategoryItemResponse
+import com.rafi.okegasfood.data.source.network.model.category.CategoryItemResponse
 
 fun CategoryItemResponse?.toCategory() = Category(
     imgUrl = this?.imgUrl.orEmpty(),

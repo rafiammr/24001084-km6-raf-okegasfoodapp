@@ -1,4 +1,4 @@
-package com.rafi.okegasfood.data.source.network.model
+package com.rafi.okegasfood.data.source.network.model.menu
 
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
