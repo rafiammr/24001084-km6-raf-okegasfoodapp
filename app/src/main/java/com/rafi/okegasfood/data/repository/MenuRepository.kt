@@ -31,20 +31,21 @@ class MenuRepositoryImpl(private val dataSource: MenuDataSource, private val fir
             val currentUser = firebaseService.getCurrentUser()
             val userName = currentUser?.displayName ?: ""
             val totalPrice = menu.sumOf { it.menuPrice * it.itemQuantity }
-            dataSource.createOrder(CheckoutRequestPayload(
-                username = userName,
-                total = totalPrice.toInt(),
-                orders = menu.map {
-                    CheckoutItemPayload(
-                        name = it.menuName,
-                        quantity = it.itemQuantity,
-                        notes = it.itemNotes.orEmpty(),
-                        price = it.menuPrice
-                    )
-                }
-            )).status ?: false
+            dataSource.createOrder(
+                CheckoutRequestPayload(
+                    username = userName,
+                    total = totalPrice.toInt(),
+                    orders =
+                        menu.map {
+                            CheckoutItemPayload(
+                                name = it.menuName,
+                                quantity = it.itemQuantity,
+                                notes = it.itemNotes.orEmpty(),
+                                price = it.menuPrice,
+                            )
+                        },
+                ),
+            ).status ?: false
         }
     }
-
-
 }

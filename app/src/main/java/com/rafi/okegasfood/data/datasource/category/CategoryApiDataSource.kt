@@ -7,5 +7,4 @@ class CategoryApiDataSource(private val service: OkeGasFoodApiService) : Categor
     override suspend fun getCategories(): CategoriesResponse {
         return service.getCategories()
     }
-
 }

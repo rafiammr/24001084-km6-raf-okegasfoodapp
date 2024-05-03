@@ -5,17 +5,20 @@ import com.rafi.okegasfood.data.source.local.database.entity.CartEntity
 import kotlinx.coroutines.flow.Flow
 
 interface CartDataSource {
+    fun getAllCarts(): Flow<List<CartEntity>>
 
-    fun getAllCarts() : Flow<List<CartEntity>>
-    suspend fun insertCart(cart : CartEntity): Long
+    suspend fun insertCart(cart: CartEntity): Long
+
     suspend fun updateCart(cart: CartEntity): Int
+
     suspend fun deleteCart(cart: CartEntity): Int
+
     suspend fun deleteAll()
 }
 
 class CartDatabaseDataSource(
-    private val dao: CartDao
-) : CartDataSource{
+    private val dao: CartDao,
+) : CartDataSource {
     override fun getAllCarts(): Flow<List<CartEntity>> = dao.getAllCarts()
 
     override suspend fun insertCart(cart: CartEntity): Long = dao.insertCart(cart)
@@ -25,5 +28,4 @@ class CartDatabaseDataSource(
     override suspend fun deleteCart(cart: CartEntity): Int = dao.deleteCart(cart)
 
     override suspend fun deleteAll() = dao.deleteAll()
-
 }

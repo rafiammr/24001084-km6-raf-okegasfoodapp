@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 
 class DetailMenuViewModel(
     private val extras: Bundle?,
-    private val cartRepository: CartRepository
+    private val cartRepository: CartRepository,
 ) : ViewModel() {
     val menu = extras?.getParcelable<Menu>(DetailMenuActivity.EXTRAS_MENU)
     private val totalMenu = MutableLiveData<Int>()

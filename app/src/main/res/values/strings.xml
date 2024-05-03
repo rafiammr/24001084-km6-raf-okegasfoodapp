@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">OkeGas Food</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_tab_profile">Profile</string>
     <string name="title_tab_cart">Cart</string>
     <string name="title_tab_home">Home</string>
@@ -10,20 +8,14 @@
     <string name="text_header">Hai, %1$s</string>
     <string name="desc_header">Mau makan apa hari ini?</string>
     <string name="text_header_menu">List Menu Makanan</string>
-    <string name="profile_username">Username</string>
-    <string name="profile_password">Password</string>
-    <string name="profile_email">Email</string>
-    <string name="profile_no_telepon">No. Telepon</string>
     <string name="header_profile">Profile</string>
     <string name="button_add_to_cart">Tambahkan ke Keranjang - %s</string>
     <string name="sum">1</string>
     <string name="location">Lokasi</string>
-    <string name="text_hint_notes">Notes</string>
     <string name="notes_cart">Catatan :</string>
     <string name="text_header_your_cart">Keranjang</string>
     <string name="button_checkout_cart">Pesan</string>
     <string name="total_quantity">%s x</string>
-    <string name="total_quantity_checkout">x %s</string>
     <string name="text_cart_is_empty">Keranjang Kosong</string>
     <string name="text_section_checkout">Total Harga</string>
     <string name="text_title_order_confirmation">Konfirmasi Pesanan</string>

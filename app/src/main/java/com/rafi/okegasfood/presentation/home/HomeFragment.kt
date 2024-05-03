@@ -7,66 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.rafi.okegasfood.R
-import com.rafi.okegasfood.data.datasource.AuthDataSource
-import com.rafi.okegasfood.data.datasource.FirebaseAuthDataSource
-import com.rafi.okegasfood.data.datasource.category.CategoryApiDataSource
-import com.rafi.okegasfood.data.datasource.category.CategoryDataSource
-import com.rafi.okegasfood.data.datasource.menu.MenuApiDataSource
-import com.rafi.okegasfood.data.datasource.menu.MenuDataSource
-import com.rafi.okegasfood.data.datasource.user.UserDataSource
-import com.rafi.okegasfood.data.datasource.user.UserDataSourceImpl
 import com.rafi.okegasfood.data.model.Category
 import com.rafi.okegasfood.data.model.Menu
-import com.rafi.okegasfood.data.repository.CategoryRepository
-import com.rafi.okegasfood.data.repository.CategoryRepositoryImpl
-import com.rafi.okegasfood.data.repository.MenuRepository
-import com.rafi.okegasfood.data.repository.MenuRepositoryImpl
-import com.rafi.okegasfood.data.repository.UserModeRepository
-import com.rafi.okegasfood.data.repository.UserModeRepositoryImpl
-import com.rafi.okegasfood.data.repository.UserRepository
-import com.rafi.okegasfood.data.repository.UserRepositoryImpl
-import com.rafi.okegasfood.data.source.firebase.FirebaseService
-import com.rafi.okegasfood.data.source.firebase.FirebaseServiceImpl
-import com.rafi.okegasfood.data.source.local.pref.UserPreference
-import com.rafi.okegasfood.data.source.local.pref.UserPreferenceImpl
-import com.rafi.okegasfood.data.source.network.services.OkeGasFoodApiService
 import com.rafi.okegasfood.databinding.FragmentHomeBinding
 import com.rafi.okegasfood.presentation.detailmenu.DetailMenuActivity
 import com.rafi.okegasfood.presentation.home.homeadapter.CategoryAdapter
 import com.rafi.okegasfood.presentation.home.homeadapter.MenuAdapter
 import com.rafi.okegasfood.presentation.home.homeadapter.OnItemClickedListener
-import com.rafi.okegasfood.utils.GenericViewModelFactory
 import com.rafi.okegasfood.utils.proceedWhen
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private lateinit var mySharedPreferences: UserPreferenceImpl
 
-
-    private val viewModel: HomeViewModel by viewModels {
-        val service = OkeGasFoodApiService.invoke()
-        val firebaseService: FirebaseService = FirebaseServiceImpl()
-        val authDataSource: AuthDataSource = FirebaseAuthDataSource(firebaseService)
-        val userRepository: UserRepository = UserRepositoryImpl(authDataSource)
-        val userPreference: UserPreference = UserPreferenceImpl(requireContext())
-        val userDataSource: UserDataSource = UserDataSourceImpl(userPreference)
-        val userModeRepository: UserModeRepository = UserModeRepositoryImpl(userDataSource)
-        val menuDataSource: MenuDataSource = MenuApiDataSource(service)
-        val menuRepository: MenuRepository = MenuRepositoryImpl(menuDataSource, firebaseService)
-        val categoryDataSource: CategoryDataSource = CategoryApiDataSource(service)
-        val categoryRepository: CategoryRepository = CategoryRepositoryImpl(categoryDataSource)
-        GenericViewModelFactory.create(
-            HomeViewModel(
-                categoryRepository,
-                menuRepository,
-                userModeRepository,
-                userRepository
-            )
-        )
-    }
+    private val homeViewModel: HomeViewModel by viewModel()
 
     private val categoryAdapter: CategoryAdapter by lazy {
         CategoryAdapter {
@@ -75,15 +31,17 @@ class HomeFragment : Fragment() {
     }
 
     private val menuAdapter: MenuAdapter by lazy {
-        MenuAdapter(object : OnItemClickedListener<Menu> {
-            override fun onItemClicked(item: Menu) {
-                DetailMenuActivity.startActivity(requireContext(), item)
-            }
-        })
+        MenuAdapter(
+            object : OnItemClickedListener<Menu> {
+                override fun onItemClicked(item: Menu) {
+                    DetailMenuActivity.startActivity(requireContext(), item)
+                }
+            },
+        )
     }
 
     private fun applyUiMode() {
-        val isUsingGridMode = viewModel.isUsingGridMode()
+        val isUsingGridMode = homeViewModel.isUsingGridMode()
         if (isUsingGridMode) {
             setupListMenu(isUsingGrid = true)
         } else {
@@ -93,14 +51,18 @@ class HomeFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
-        mySharedPreferences = UserPreferenceImpl(requireContext())
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         applyUiMode()
         showUserData()
@@ -111,17 +73,17 @@ class HomeFragment : Fragment() {
     }
 
     private fun showUserData() {
-        viewModel.getCurrentUser()?.let {
+        homeViewModel.getCurrentUser()?.let {
             val headerMessage = getString(R.string.text_header, it.fullName)
             binding.layoutHeader.tvName.text = headerMessage
-        }?: run {
+        } ?: run {
             binding.layoutHeader.tvName.text = getString(R.string.text_header_home_hai)
         }
     }
 
     private fun getMenuData(categoryName: String? = null) {
         Log.d("HomeFragment", "getSlugData: Slug received: $categoryName")
-        viewModel.getMenu(categoryName).observe(viewLifecycleOwner) {
+        homeViewModel.getMenu(categoryName).observe(viewLifecycleOwner) {
             it.proceedWhen(
                 doOnSuccess = {
                     binding.layoutStateHomeMenu.root.isVisible = false
@@ -144,14 +106,14 @@ class HomeFragment : Fragment() {
                     binding.layoutStateHomeMenu.tvError.isVisible = true
                     binding.layoutStateHomeMenu.tvError.text = getString(R.string.text_no_data)
                     binding.rvMenu.isVisible = false
-                }
+                },
             )
         }
     }
 
     private fun getCategoryData() {
         Log.d("HomeFragment", "getCategoryData: Fetching categories")
-        viewModel.getCategories().observe(viewLifecycleOwner) {
+        homeViewModel.getCategories().observe(viewLifecycleOwner) {
             it.proceedWhen(
                 doOnLoading = {
                     binding.layoutStateHomeCategory.root.isVisible = true
@@ -179,7 +141,7 @@ class HomeFragment : Fragment() {
                     binding.layoutStateHomeCategory.tvError.isVisible = true
                     binding.layoutStateHomeCategory.tvError.text = getString(R.string.text_no_data)
                     binding.rvCategory.isVisible = false
-                }
+                },
             )
         }
     }
@@ -201,7 +163,7 @@ class HomeFragment : Fragment() {
 
     private fun setClickAction() {
         binding.layoutHeaderMenu.ivIconGridList.setOnClickListener {
-            viewModel.changeListGridMode()
+            homeViewModel.changeListGridMode()
             applyUiMode()
         }
     }
@@ -218,4 +180,3 @@ class HomeFragment : Fragment() {
         menuAdapter.submitData(data)
     }
 }
-

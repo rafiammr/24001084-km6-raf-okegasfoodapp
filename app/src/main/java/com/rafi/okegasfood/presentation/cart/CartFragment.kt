@@ -7,78 +7,62 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.rafi.okegasfood.R
-import com.rafi.okegasfood.data.datasource.AuthDataSource
-import com.rafi.okegasfood.data.datasource.FirebaseAuthDataSource
-import com.rafi.okegasfood.data.datasource.cart.CartDataSource
-import com.rafi.okegasfood.data.datasource.cart.CartDatabaseDataSource
 import com.rafi.okegasfood.data.model.Cart
-import com.rafi.okegasfood.data.repository.CartRepository
-import com.rafi.okegasfood.data.repository.CartRepositoryImpl
-import com.rafi.okegasfood.data.repository.UserRepository
-import com.rafi.okegasfood.data.repository.UserRepositoryImpl
-import com.rafi.okegasfood.data.source.firebase.FirebaseService
-import com.rafi.okegasfood.data.source.firebase.FirebaseServiceImpl
-import com.rafi.okegasfood.data.source.local.database.AppDatabase
 import com.rafi.okegasfood.databinding.FragmentCartBinding
 import com.rafi.okegasfood.presentation.checkout.CheckoutActivity
 import com.rafi.okegasfood.presentation.common.CartListAdapter
 import com.rafi.okegasfood.presentation.common.CartListener
 import com.rafi.okegasfood.presentation.login.LoginActivity
-import com.rafi.okegasfood.utils.GenericViewModelFactory
 import com.rafi.okegasfood.utils.hideKeyboard
 import com.rafi.okegasfood.utils.proceedWhen
 import com.rafi.okegasfood.utils.toIndonesianFormat
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CartFragment : Fragment() {
-
     private lateinit var binding: FragmentCartBinding
 
-    private val viewModel: CartViewModel by viewModels {
-        val source : FirebaseService = FirebaseServiceImpl()
-        val dataSource : AuthDataSource = FirebaseAuthDataSource(source)
-        val repository : UserRepository = UserRepositoryImpl(dataSource)
-        val appDatabase = AppDatabase.getInstance(requireContext())
-        val cartDataSource: CartDataSource = CartDatabaseDataSource(appDatabase.cartDao())
-        val cartRepository: CartRepository = CartRepositoryImpl(cartDataSource)
-        GenericViewModelFactory.create(CartViewModel(cartRepository, repository))
-    }
+    private val cartViewModel: CartViewModel by viewModel()
 
     private val adapter: CartListAdapter by lazy {
-        CartListAdapter(object : CartListener {
-            override fun onPlusTotalItemCartClicked(cart: Cart) {
-                viewModel.increaseCart(cart)
-            }
+        CartListAdapter(
+            object : CartListener {
+                override fun onPlusTotalItemCartClicked(cart: Cart) {
+                    cartViewModel.increaseCart(cart)
+                }
 
-            override fun onMinusTotalItemCartClicked(cart: Cart) {
-                viewModel.decreaseCart(cart)
-            }
+                override fun onMinusTotalItemCartClicked(cart: Cart) {
+                    cartViewModel.decreaseCart(cart)
+                }
 
-            override fun onRemoveCartClicked(cart: Cart) {
-                viewModel.removeCart(cart)
-            }
+                override fun onRemoveCartClicked(cart: Cart) {
+                    cartViewModel.removeCart(cart)
+                }
 
-            override fun onUserDoneEditingNotes(cart: Cart) {
-                viewModel.setCartNotes(cart)
-                hideKeyboard()
-            }
-        })
+                override fun onUserDoneEditingNotes(cart: Cart) {
+                    cartViewModel.setCartNotes(cart)
+                    hideKeyboard()
+                }
+            },
+        )
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         // Inflate the layout for this fragment
         binding = FragmentCartBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         setupList()
         observeData()
@@ -93,7 +77,7 @@ class CartFragment : Fragment() {
 
     private fun checkIfUserLogin() {
         lifecycleScope.launch {
-            if (viewModel.isUserLoggedIn()) {
+            if (cartViewModel.isUserLoggedIn()) {
                 navigateToCheckout()
             } else {
                 navigateToLogin()
@@ -110,7 +94,7 @@ class CartFragment : Fragment() {
     }
 
     private fun observeData() {
-        viewModel.getAllCarts().observe(viewLifecycleOwner) { result ->
+        cartViewModel.getAllCarts().observe(viewLifecycleOwner) { result ->
             result.proceedWhen(
                 doOnLoading = {
                     binding.layoutState.root.isVisible = true
@@ -148,7 +132,7 @@ class CartFragment : Fragment() {
                     result.payload?.let { (carts, totalPrice) ->
                         binding.tvCartTotalPrice.text = totalPrice.toIndonesianFormat()
                     }
-                }
+                },
             )
         }
     }
@@ -156,5 +140,4 @@ class CartFragment : Fragment() {
     private fun setupList() {
         binding.rvCart.adapter = this@CartFragment.adapter
     }
-
 }

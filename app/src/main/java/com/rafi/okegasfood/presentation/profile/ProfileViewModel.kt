@@ -10,7 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(private val repository: UserRepository) : ViewModel() {
-
     val isEditMode = MutableLiveData(false)
 
     private val _changeProfileResult = MutableLiveData<ResultWrapper<Boolean>>()

@@ -4,9 +4,11 @@ import com.rafi.okegasfood.data.source.local.pref.UserPreference
 
 interface UserDataSource {
     fun isUsingGridMode(): Boolean
+
     fun setUsingGridMode(isUsingGridMode: Boolean)
 }
-class UserDataSourceImpl(private val userPreference: UserPreference): UserDataSource {
+
+class UserDataSourceImpl(private val userPreference: UserPreference) : UserDataSource {
     override fun isUsingGridMode(): Boolean {
         return userPreference.isUsingGridMode()
     }
