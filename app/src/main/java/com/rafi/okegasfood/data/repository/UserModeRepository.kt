@@ -4,10 +4,11 @@ import com.rafi.okegasfood.data.datasource.user.UserDataSource
 
 interface UserModeRepository {
     fun isUsingGridMode(): Boolean
+
     fun setUsingGridMode(isUsingGridMode: Boolean)
 }
 
-class UserModeRepositoryImpl(private val dataSource: UserDataSource) : UserModeRepository{
+class UserModeRepositoryImpl(private val dataSource: UserDataSource) : UserModeRepository {
     override fun isUsingGridMode(): Boolean {
         return dataSource.isUsingGridMode()
     }
@@ -15,5 +16,4 @@ class UserModeRepositoryImpl(private val dataSource: UserDataSource) : UserModeR
     override fun setUsingGridMode(isUsingGridMode: Boolean) {
         return dataSource.setUsingGridMode(isUsingGridMode)
     }
-
 }

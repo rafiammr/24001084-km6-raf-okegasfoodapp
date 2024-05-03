@@ -16,5 +16,5 @@ data class MenuItemResponse(
     @SerializedName("detail")
     val detail: String?,
     @SerializedName("alamat_resto")
-    val location: String?
+    val location: String?,
 )

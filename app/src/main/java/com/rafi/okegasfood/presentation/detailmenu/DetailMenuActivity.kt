@@ -5,27 +5,25 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import com.rafi.okegasfood.R
-import com.rafi.okegasfood.data.datasource.cart.CartDataSource
-import com.rafi.okegasfood.data.datasource.cart.CartDatabaseDataSource
 import com.rafi.okegasfood.data.model.Menu
-import com.rafi.okegasfood.data.repository.CartRepository
-import com.rafi.okegasfood.data.repository.CartRepositoryImpl
-import com.rafi.okegasfood.data.source.local.database.AppDatabase
 import com.rafi.okegasfood.databinding.ActivityDetailMenuBinding
-import com.rafi.okegasfood.utils.GenericViewModelFactory
 import com.rafi.okegasfood.utils.hideKeyboard
 import com.rafi.okegasfood.utils.proceedWhen
 import com.rafi.okegasfood.utils.toIndonesianFormat
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class DetailMenuActivity : AppCompatActivity() {
-
     companion object {
         const val EXTRAS_MENU = "EXTRAS_MENU"
-        fun startActivity(context: Context, menu: Menu) {
+
+        fun startActivity(
+            context: Context,
+            menu: Menu,
+        ) {
             val intent = Intent(context, DetailMenuActivity::class.java)
             intent.putExtra(EXTRAS_MENU, menu)
             context.startActivity(intent)
@@ -36,16 +34,8 @@ class DetailMenuActivity : AppCompatActivity() {
         ActivityDetailMenuBinding.inflate(layoutInflater)
     }
 
-    private val viewModel: DetailMenuViewModel by viewModels {
-        val db = AppDatabase.getInstance(this)
-        val ds: CartDataSource = CartDatabaseDataSource(db.cartDao())
-        val rp: CartRepository = CartRepositoryImpl(ds)
-        GenericViewModelFactory.create(
-            DetailMenuViewModel(intent?.extras, rp)
-        )
-
-        GenericViewModelFactory.create(DetailMenuViewModel(intent?.extras, rp))
-
+    private val detailMenuViewModel: DetailMenuViewModel by viewModel {
+        parametersOf(intent.extras)
     }
     private var totalItem: Int = 1
     private var totalPrice: Double = 0.0
@@ -53,8 +43,8 @@ class DetailMenuActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        bindMenu(viewModel.menu)
-        observeData(viewModel.menu)
+        bindMenu(detailMenuViewModel.menu)
+        observeData(detailMenuViewModel.menu)
     }
 
     private fun bindMenu(menu: Menu?) {
@@ -78,10 +68,10 @@ class DetailMenuActivity : AppCompatActivity() {
                 onBackPressed()
             }
             binding.layoutButtonAddToCart.btnSubItem.setOnClickListener {
-                viewModel.subItem()
+                detailMenuViewModel.subItem()
             }
             binding.layoutButtonAddToCart.btnAddItem.setOnClickListener {
-                viewModel.addItem()
+                detailMenuViewModel.addItem()
             }
             binding.layoutButtonAddToCart.btnAddToCart.setOnClickListener {
                 val notes = binding.layoutButtonAddToCart.editTextNotes.text.toString()
@@ -92,26 +82,32 @@ class DetailMenuActivity : AppCompatActivity() {
     }
 
     private fun addMenuCart(notes: String?) {
-        viewModel.addToCart(notes).observe(this) {
+        detailMenuViewModel.addToCart(notes).observe(this) {
             it.proceedWhen(
                 doOnSuccess = {
-                    Toast.makeText(this,
-                        getString(R.string.text_add_menu_to_cart_succes), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.text_add_menu_to_cart_succes),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                     finish()
                 },
                 doOnError = {
-                    Toast.makeText(this,
-                        getString(R.string.text_add_menu_to_cart_failed), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        getString(R.string.text_add_menu_to_cart_failed),
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 },
                 doOnLoading = {
                     Toast.makeText(this, getString(R.string.text_loading), Toast.LENGTH_SHORT).show()
-                }
+                },
             )
         }
     }
 
     private fun observeData(menu: Menu?) {
-        viewModel.totalItemMenu.observe(this) { item ->
+        detailMenuViewModel.totalItemMenu.observe(this) { item ->
             totalItem = item
             totalPrice = (totalItem * (menu?.price ?: 0).toDouble())
             binding.layoutButtonAddToCart.tvTotalItem.text = totalItem.toString()

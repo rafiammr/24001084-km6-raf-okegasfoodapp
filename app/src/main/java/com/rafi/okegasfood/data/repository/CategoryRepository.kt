@@ -21,5 +21,4 @@ class CategoryRepositoryImpl(private val dataSource: CategoryDataSource) : Categ
                 delay(1000)
             }
     }
-
 }
